@@ -1,0 +1,1569 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="La historia secreta de los autómatas y robots: desde los mitos griegos hasta la IA del 2026. Un viaje visual e interactivo.">
+    <meta name="author" content="Paul Pineda">
+    <meta name="theme-color" content="#08090c">
+    <title>🤖 Autómatas y Robots | La historia que no te contaron</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: #05060a;
+            color: #f3f4f6;
+            font-family: "Inter", sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        ::selection {
+            background: #00e5ff;
+            color: #05060a;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        :root {
+            --bg: #05060a;
+            --surface: #0e1016;
+            --surface-2: #151820;
+            --border: rgba(255, 255, 255, .08);
+            --text: #f3f4f6;
+            --muted: #9298a3;
+            --muted-2: #676d78;
+            --purple: #a855f7;
+            --cyan: #00e5ff;
+            --pink: #ff006e;
+            --green: #55d187;
+            --orange: #ff6b35;
+            --yellow: #f7c948;
+            --container: 1200px;
+        }
+
+        /* ===== NOISE ===== */
+        .noise {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            opacity: .04;
+            z-index: 1000;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E");
+        }
+
+        /* ===== HEADER ===== */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 900;
+            border-bottom: 1px solid transparent;
+            transition: all .3s ease;
+        }
+
+        header.scrolled {
+            background: rgba(5, 6, 10, .85);
+            backdrop-filter: blur(24px);
+            border-color: var(--border);
+        }
+
+        .container {
+            width: min(calc(100% - 48px), var(--container));
+            margin-inline: auto;
+        }
+
+        .nav {
+            min-height: 76px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            font-family: "Space Grotesk", sans-serif;
+            font-weight: 600;
+            font-size: .95rem;
+            letter-spacing: -.02em;
+        }
+
+        .brand-mark {
+            width: 36px;
+            height: 36px;
+            border: 1px solid rgba(255, 255, 255, .18);
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .brand-mark::before {
+            content: "";
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--purple);
+            filter: blur(6px);
+        }
+
+        .brand-mark span {
+            position: relative;
+            z-index: 2;
+            font-size: .65rem;
+            font-weight: 700;
+        }
+
+        .brand-text span {
+            color: var(--muted);
+            font-weight: 400;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            position: relative;
+            color: var(--muted);
+            font-size: .82rem;
+            transition: color .25s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--cyan);
+        }
+
+        .mobile-menu {
+            display: none;
+            width: 42px;
+            height: 42px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            padding: 150px 0 80px;
+            position: relative;
+            overflow: hidden;
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-orb {
+            position: absolute;
+            width: 700px;
+            height: 700px;
+            border-radius: 50%;
+            filter: blur(180px);
+            opacity: .12;
+            pointer-events: none;
+        }
+
+        .hero-orb.one {
+            background: var(--purple);
+            top: -250px;
+            right: -200px;
+            animation: float 12s ease-in-out infinite;
+        }
+
+        .hero-orb.two {
+            background: var(--cyan);
+            bottom: -300px;
+            left: -200px;
+            animation: float 15s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            50% {
+                transform: translate(-40px, 40px) scale(1.1);
+            }
+        }
+
+        .hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            background: rgba(255, 255, 255, .02);
+            color: var(--muted);
+            font-size: .7rem;
+            font-weight: 600;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+            margin-bottom: 32px;
+        }
+
+        .hero-eyebrow .pulse {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 12px var(--green);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: .5;
+                transform: scale(.8);
+            }
+        }
+
+        .hero h1 {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: clamp(2.8rem, 8vw, 6.5rem);
+            line-height: .9;
+            letter-spacing: -.07em;
+            font-weight: 700;
+            max-width: 1100px;
+            margin-bottom: 32px;
+        }
+
+        .hero h1 .gradient {
+            background: linear-gradient(135deg, var(--purple) 0%, var(--cyan) 50%, var(--pink) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero h1 .outline {
+            color: transparent;
+            -webkit-text-stroke: 1.5px rgba(255, 255, 255, .3);
+        }
+
+        .hero-description {
+            max-width: 700px;
+            color: var(--muted);
+            font-size: clamp(1rem, 1.5vw, 1.2rem);
+            line-height: 1.75;
+            margin-bottom: 40px;
+        }
+
+        .hero-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border);
+        }
+
+        .hero-stat {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .hero-stat strong {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--cyan);
+        }
+
+        .hero-stat span {
+            font-size: .7rem;
+            text-transform: uppercase;
+            letter-spacing: .12em;
+            color: var(--muted-2);
+        }
+
+        /* ===== INTRO BANNER ===== */
+        .intro-banner {
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            padding: 30px 0;
+            overflow: hidden;
+        }
+
+        .banner-track {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            animation: slide 30s linear infinite;
+            white-space: nowrap;
+        }
+
+        .banner-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--muted-2);
+            font-family: "Space Grotesk", sans-serif;
+            font-size: .85rem;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+        }
+
+        .banner-item i {
+            color: var(--cyan);
+        }
+
+        @keyframes slide {
+            from {
+                transform: translateX(0);
+            }
+
+            to {
+                transform: translateX(-50%);
+            }
+        }
+
+        /* ===== STORY SECTION ===== */
+        .story {
+            padding: 100px 0;
+        }
+
+        .story-head {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 80px;
+        }
+
+        .story-head h2 {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: clamp(2rem, 5vw, 4rem);
+            line-height: 1;
+            letter-spacing: -.06em;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .story-head p {
+            color: var(--muted);
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        /* ===== ERA CARDS ===== */
+        .eras {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            overflow: hidden;
+        }
+
+        .era-card {
+            background: var(--bg);
+            padding: 44px 36px;
+            position: relative;
+            transition: background .4s ease;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .era-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--purple), var(--cyan));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform .5s cubic-bezier(.2, .7, .2, 1);
+        }
+
+        .era-card:hover {
+            background: var(--surface);
+        }
+
+        .era-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .era-card .era-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: grid;
+            place-items: center;
+            background: rgba(168, 85, 247, .1);
+            border: 1px solid rgba(168, 85, 247, .2);
+            color: var(--purple);
+            font-size: 1.5rem;
+            margin-bottom: 28px;
+            transition: all .4s ease;
+        }
+
+        .era-card:hover .era-icon {
+            background: rgba(0, 229, 255, .1);
+            border-color: rgba(0, 229, 255, .3);
+            color: var(--cyan);
+            transform: rotate(-8deg) scale(1.1);
+        }
+
+        .era-date {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: .75rem;
+            font-weight: 700;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+            color: var(--cyan);
+            margin-bottom: 12px;
+        }
+
+        .era-card h3 {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: clamp(1.5rem, 2.5vw, 2rem);
+            line-height: 1.1;
+            letter-spacing: -.04em;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .era-card p {
+            color: var(--muted);
+            font-size: .92rem;
+            line-height: 1.75;
+        }
+
+        .era-card .era-fact {
+            margin-top: 24px;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, .02);
+            border-left: 2px solid var(--yellow);
+            border-radius: 0 8px 8px 0;
+            font-size: .82rem;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .era-card .era-fact strong {
+            color: var(--yellow);
+            font-weight: 600;
+        }
+
+        /* ===== QUOTE ===== */
+        .quote-section {
+            padding: 80px 0;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quote-section::before {
+            content: "\201C";
+            position: absolute;
+            top: -40px;
+            left: 40px;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 20rem;
+            color: rgba(168, 85, 247, .06);
+            line-height: 1;
+            pointer-events: none;
+        }
+
+        .quote-inner {
+            max-width: 850px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .quote-inner blockquote {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: clamp(1.4rem, 3vw, 2.4rem);
+            line-height: 1.4;
+            letter-spacing: -.03em;
+            font-weight: 500;
+            margin-bottom: 32px;
+        }
+
+        .quote-inner blockquote em {
+            font-style: normal;
+            color: var(--cyan);
+        }
+
+        .quote-inner cite {
+            color: var(--muted);
+            font-size: .8rem;
+            font-style: normal;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+        }
+
+        /* ===== TIMELINE VERTICAL ===== */
+        .timeline-section {
+            padding: 100px 0;
+        }
+
+        .timeline-head {
+            text-align: center;
+            margin-bottom: 70px;
+        }
+
+        .timeline-head h2 {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: clamp(2rem, 5vw, 3.8rem);
+            line-height: 1;
+            letter-spacing: -.06em;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .timeline-head p {
+            color: var(--muted);
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 1rem;
+            line-height: 1.75;
+        }
+
+        .timeline-vertical {
+            position: relative;
+            max-width: 900px;
+            margin: 0 auto;
+            padding-left: 50px;
+        }
+
+        .timeline-vertical::before {
+            content: "";
+            position: absolute;
+            left: 15px;
+            top: 10px;
+            bottom: 10px;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--purple) 0%, var(--cyan) 50%, var(--green) 100%);
+            opacity: .4;
+            border-radius: 2px;
+        }
+
+        .tl-item {
+            position: relative;
+            padding: 0 0 56px 30px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all .8s cubic-bezier(.2, .7, .2, 1);
+        }
+
+        .tl-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .tl-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .tl-item::before {
+            content: "";
+            position: absolute;
+            left: -42px;
+            top: 8px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--bg);
+            border: 2px solid var(--muted-2);
+            transition: all .4s ease;
+            z-index: 2;
+        }
+
+        .tl-item:hover::before {
+            border-color: var(--cyan);
+            background: var(--cyan);
+            box-shadow: 0 0 20px var(--cyan);
+        }
+
+        .tl-year {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: .78rem;
+            font-weight: 700;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+            color: var(--purple);
+            margin-bottom: 10px;
+        }
+
+        .tl-item h3 {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: clamp(1.3rem, 2.2vw, 1.7rem);
+            line-height: 1.2;
+            letter-spacing: -.03em;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .tl-item p {
+            color: var(--muted);
+            font-size: .93rem;
+            line-height: 1.8;
+            max-width: 720px;
+        }
+
+        .tl-highlight {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 14px;
+            padding: 6px 12px;
+            background: rgba(0, 229, 255, .06);
+            border: 1px solid rgba(0, 229, 255, .2);
+            border-radius: 100px;
+            font-size: .7rem;
+            color: var(--cyan);
+            letter-spacing: .05em;
+        }
+
+        /* ===== FUTURE ===== */
+        .future {
+            padding: 100px 0;
+            background: linear-gradient(180deg, var(--bg) 0%, var(--surface) 100%);
+            border-top: 1px solid var(--border);
+        }
+
+        .future-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .future-copy h2 {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: clamp(2rem, 5vw, 3.8rem);
+            line-height: 1;
+            letter-spacing: -.06em;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+
+        .future-copy h2 .gradient {
+            background: linear-gradient(135deg, var(--cyan), var(--purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .future-copy p {
+            color: var(--muted);
+            font-size: 1rem;
+            line-height: 1.85;
+            margin-bottom: 24px;
+        }
+
+        .future-list {
+            list-style: none;
+            margin-top: 32px;
+        }
+
+        .future-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .future-list li:last-child {
+            border-bottom: 0;
+        }
+
+        .future-list .check {
+            flex: 0 0 24px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(85, 209, 135, .12);
+            border: 1px solid rgba(85, 209, 135, .3);
+            display: grid;
+            place-items: center;
+            color: var(--green);
+            font-size: .7rem;
+            margin-top: 2px;
+        }
+
+        .future-list strong {
+            color: var(--text);
+            font-weight: 500;
+            display: block;
+            margin-bottom: 4px;
+            font-size: .95rem;
+        }
+
+        .future-list span {
+            color: var(--muted-2);
+            font-size: .82rem;
+        }
+
+        .future-visual {
+            position: relative;
+            aspect-ratio: 1;
+            display: grid;
+            place-items: center;
+        }
+
+        .orbit {
+            position: absolute;
+            inset: 0;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            animation: spin 20s linear infinite;
+        }
+
+        .orbit::before {
+            content: "";
+            position: absolute;
+            top: -6px;
+            left: 50%;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--cyan);
+            box-shadow: 0 0 20px var(--cyan);
+            transform: translateX(-50%);
+        }
+
+        .orbit.two {
+            inset: 15%;
+            animation-duration: 15s;
+            animation-direction: reverse;
+        }
+
+        .orbit.two::before {
+            background: var(--purple);
+            box-shadow: 0 0 20px var(--purple);
+        }
+
+        .orbit.three {
+            inset: 30%;
+            animation-duration: 10s;
+        }
+
+        .orbit.three::before {
+            background: var(--pink);
+            box-shadow: 0 0 20px var(--pink);
+        }
+
+        .orbit-center {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(168, 85, 247, .3), transparent 70%);
+            border: 1px solid rgba(168, 85, 247, .3);
+            display: grid;
+            place-items: center;
+            font-size: 2.5rem;
+            color: var(--purple);
+            animation: pulse-glow 3s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes pulse-glow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 rgba(168, 85, 247, 0);
+            }
+
+            50% {
+                box-shadow: 0 0 40px rgba(168, 85, 247, .4);
+            }
+        }
+
+        /* ===== CTA ===== */
+        .cta {
+            padding: 100px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta::before {
+            content: "";
+            position: absolute;
+            width: 800px;
+            height: 800px;
+            border-radius: 50%;
+            background: var(--purple);
+            filter: blur(200px);
+            opacity: .1;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        .cta h2 {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: clamp(2rem, 5vw, 4rem);
+            line-height: 1;
+            letter-spacing: -.06em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .cta p {
+            color: var(--muted);
+            font-size: 1.05rem;
+            max-width: 600px;
+            margin: 0 auto 40px;
+            line-height: 1.75;
+            position: relative;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 36px;
+            background: var(--cyan);
+            color: var(--bg);
+            border-radius: 100px;
+            font-weight: 600;
+            font-size: .9rem;
+            letter-spacing: .02em;
+            transition: all .3s ease;
+            position: relative;
+            border: 1px solid var(--cyan);
+        }
+
+        .cta-button:hover {
+            background: transparent;
+            color: var(--cyan);
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(0, 229, 255, .2);
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 30px 0;
+            background: var(--bg);
+        }
+
+        .footer-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .footer-copy {
+            color: var(--muted-2);
+            font-size: .72rem;
+        }
+
+        .footer-copy strong {
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .footer-links a {
+            color: var(--muted-2);
+            font-size: .72rem;
+            transition: color .2s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--cyan);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 900px) {
+            .nav-links {
+                position: fixed;
+                top: 76px;
+                left: 20px;
+                right: 20px;
+                display: none;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0;
+                padding: 15px;
+                background: rgba(14, 16, 22, .98);
+                backdrop-filter: blur(20px);
+                border: 1px solid var(--border);
+                border-radius: 16px;
+                z-index: 800;
+            }
+
+            .nav-links.open {
+                display: flex;
+            }
+
+            .nav-links li a {
+                display: block;
+                padding: 14px 8px;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .nav-links li:last-child a {
+                border-bottom: 0;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .future-grid {
+                grid-template-columns: 1fr;
+                gap: 60px;
+            }
+
+            .future-visual {
+                max-width: 400px;
+                margin: 0 auto;
+            }
+
+            .timeline-vertical {
+                padding-left: 30px;
+            }
+
+            .tl-item {
+                padding-left: 20px;
+            }
+
+            .tl-item::before {
+                left: -30px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                width: min(calc(100% - 30px), var(--container));
+            }
+
+            .hero {
+                padding: 120px 0 60px;
+                min-height: auto;
+            }
+
+            .hero h1 {
+                font-size: clamp(2.2rem, 11vw, 3.5rem);
+            }
+
+            .hero-stats {
+                gap: 24px;
+            }
+
+            .hero-stat strong {
+                font-size: 1.5rem;
+            }
+
+            .era-card {
+                padding: 32px 24px;
+            }
+
+            .cta-button {
+                padding: 16px 28px;
+                font-size: .85rem;
+            }
+
+            .footer-inner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: .01ms !important;
+                transition-duration: .01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="noise"></div>
+
+    <header id="site-header">
+        <div class="container">
+            <nav class="nav">
+                <a href="https://skeleton.cl" target="_blank" class="brand">
+                    <div class="brand-mark"><span>PP</span></div>
+                    <div class="brand-text">Paul Pineda <span>/ skeleton.cl</span></div>
+                </a>
+
+                <ul class="nav-links" id="nav-links">
+                    <li><a href="#eras">Eras</a></li>
+                    <li><a href="#cronologia">Cronología</a></li>
+                    <li><a href="#futuro">2026</a></li>
+                </ul>
+
+                <button class="mobile-menu" id="mobile-menu" aria-label="Menú" aria-expanded="false">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+
+        <!-- ===== HERO ===== -->
+        <section class="hero">
+            <div class="hero-orb one"></div>
+            <div class="hero-orb two"></div>
+
+            <div class="container">
+                <div class="hero-eyebrow">
+                    <span class="pulse"></span>
+                    Historia viva · 2026
+                </div>
+
+                <h1>
+                    Los robots<br>
+                    <span class="gradient">no nacieron ayer.</span><br>
+                    <span class="outline">Llevan 3.000 años</span><br>
+                    entre nosotros.
+                </h1>
+
+                <p class="hero-description">
+                    Antes de la palabra "robot", ya existían los autómatas.
+                    Antes de la IA, ya soñábamos con máquinas que pensaran.
+                    Este es el viaje —visual, cronológico y un poco irreverente—
+                    de cómo llegamos hasta aquí.
+                </p>
+
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <strong>+3.000</strong>
+                        <span>Años de historia</span>
+                    </div>
+                    <div class="hero-stat">
+                        <strong>1921</strong>
+                        <span>Nace la palabra "robot"</span>
+                    </div>
+                    <div class="hero-stat">
+                        <strong>2026</strong>
+                        <span>Robots autónomos reales</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== BANNER ===== -->
+        <div class="intro-banner">
+            <div class="banner-track">
+                <div class="banner-item"><i class="fa-solid fa-gear"></i> Autómatas griegos</div>
+                <div class="banner-item"><i class="fa-solid fa-gear"></i> Al-Jazarí</div>
+                <div class="banner-item"><i class="fa-solid fa-gear"></i> Da Vinci</div>
+                <div class="banner-item"><i class="fa-solid fa-gear"></i> Vaucanson</div>
+                <div class="banner-item"><i class="fa-solid fa-gear"></i> Čapek</div>
+                <div class="banner-item"><i class="fa-solid fa-gear"></i> Asimov</div>
+                <div class="banner-item"><i class="fa-solid fa-gear"></i> Unimate</div>
+                <div class="banner-item"><i class="fa-solid fa-gear"></i> ASIMO</div>
+                <div class="banner-item"><i class="fa-solid fa-gear"></i> ROS</div>
+                <div class="banner-item"><i class="fa-solid fa-gear"></i> Boston Dynamics</div>
+                <div class="banner-item"><i class="fa-solid fa-gear"></i> IA generativa</div>
+                <div class="banner-item"><i class="fa-solid fa-gear"></i> 2026</div>
+                <div class="banner-item"><i class="fa-solid fa-gear"></i> Autómatas griegos</div>
+                <div class="banner-item"><i class="fa-solid fa-gear"></i> Al-Jazarí</div>
+                <div class="banner-item"><i class="fa-solid fa-gear"></i> Da Vinci</div>
+                <div class="banner-item"><i class="fa-solid fa-gear"></i> Vaucanson</div>
+                <div class="banner-item"><i class="fa-solid fa-gear"></i> Čapek</div>
+                <div class="banner-item"><i class="fa-solid fa-gear"></i> Asimov</div>
+                <div class="banner-item"><i class="fa-solid fa-gear"></i> Unimate</div>
+                <div class="banner-item"><i class="fa-solid fa-gear"></i> ASIMO</div>
+                <div class="banner-item"><i class="fa-solid fa-gear"></i> ROS</div>
+                <div class="banner-item"><i class="fa-solid fa-gear"></i> Boston Dynamics</div>
+                <div class="banner-item"><i class="fa-solid fa-gear"></i> IA generativa</div>
+                <div class="banner-item"><i class="fa-solid fa-gear"></i> 2026</div>
+            </div>
+        </div>
+
+        <!-- ===== ERAS ===== -->
+        <section class="story" id="eras">
+            <div class="container">
+                <div class="story-head">
+                    <h2>Cuatro eras,<br>una obsesión.</h2>
+                    <p>
+                        La humanidad ha querido crear vida artificial desde que
+                        aprendió a tallar piedra. Estas son las cuatro grandes
+                        etapas de esa obsesión.
+                    </p>
+                </div>
+
+                <div class="eras">
+
+                    <div class="era-card">
+                        <div class="era-icon"><i class="fa-solid fa-scroll"></i></div>
+                        <div class="era-date">Antes de Cristo</div>
+                        <h3>Los mitos<br>y los dioses</h3>
+                        <p>
+                            Hefesto forjó sirvientes de oro. Talos, el gigante de
+                            bronce, protegía Creta. En Egipto, estatuas de dioses
+                            se movían con hidráulica. La idea de un ser artificial
+                            ya habitaba el imaginario humano.
+                        </p>
+                        <div class="era-fact">
+                            <strong>Dato:</strong> En 1088, Su Song construyó una torre
+                            astronómica con figuras mecánicas que anunciaban las horas.
+                        </div>
+                    </div>
+
+                    <div class="era-card">
+                        <div class="era-icon"><i class="fa-solid fa-cogs"></i></div>
+                        <div class="era-date">1206 · 1770</div>
+                        <h3>Autómatas<br>de precisión</h3>
+                        <p>
+                            Al-Jazarí diseñó un león mecánico que caminaba y rugía.
+                            Da Vinci, un caballero que movía brazos y mandíbula.
+                            Los Jaquet-Droz, un escribano que redactaba hasta 40
+                            caracteres. La mecánica alcanzó un nivel asombroso.
+                        </p>
+                        <div class="era-fact">
+                            <strong>Dato:</strong> El pato de Vaucanson (1738) comía,
+                            digería y defecaba. Fue la sensación de Europa.
+                        </div>
+                    </div>
+
+                    <div class="era-card">
+                        <div class="era-icon"><i class="fa-solid fa-robot"></i></div>
+                        <div class="era-date">1921 · 2000</div>
+                        <h3>La palabra<br>y la industria</h3>
+                        <p>
+                            Čapek inventó el término "robot" en 1921. Asimov
+                            formuló las Tres Leyes en 1942. Unimate llegó a
+                            General Motors en 1961. ASIMO caminó en 2000.
+                            La ficción se volvió ingeniería.
+                        </p>
+                        <div class="era-fact">
+                            <strong>Dato:</strong> "Robot" viene del checo <em>robota</em>,
+                            que significa "trabajo forzado".
+                        </div>
+                    </div>
+
+                    <div class="era-card">
+                        <div class="era-icon"><i class="fa-solid fa-brain"></i></div>
+                        <div class="era-date">2000 · 2026</div>
+                        <h3>Autonomía<br>e inteligencia</h3>
+                        <p>
+                            ROS estandarizó el desarrollo. La IA generativa
+                            dio lenguaje natural a los robots. Los cuadrúpedos
+                            y humanoides aprenden por imitación. En 2026,
+                            la autonomía es la norma, no la excepción.
+                        </p>
+                        <div class="era-fact">
+                            <strong>Dato:</strong> Los vehículos autónomos de nivel 4
+                            ya circulan en ciudades seleccionadas.
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== QUOTE ===== -->
+        <section class="quote-section">
+            <div class="container">
+                <div class="quote-inner">
+                    <blockquote>
+                        "La robótica no nació con el silicio.<br>
+                        Nació con el deseo humano de <em>crear vida</em><br>
+                        a partir de la materia."
+                    </blockquote>
+                    <cite>— Paul Pineda · 2026</cite>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== TIMELINE ===== -->
+        <section class="timeline-section" id="cronologia">
+            <div class="container">
+                <div class="timeline-head">
+                    <h2>La línea de tiempo<br>que importa.</h2>
+                    <p>
+                        Doce hitos que transformaron la idea de "máquina autónoma"
+                        en la disciplina que hoy conocemos como robótica.
+                    </p>
+                </div>
+
+                <div class="timeline-vertical">
+
+                    <div class="tl-item visible">
+                        <div class="tl-year">~ 400 a.C.</div>
+                        <h3>Talos, el gigante de bronce</h3>
+                        <p>
+                            En la mitología griega, Talos era un autómata de bronce
+                            que patrullaba las costas de Creta. Hefesto, dios de la
+                            forja, también construyó sirvientes mecánicos de oro.
+                            La idea del ser artificial ya estaba en el mito.
+                        </p>
+                        <div class="tl-highlight"><i class="fa-solid fa-book"></i> Mitología griega</div>
+                    </div>
+
+                    <div class="tl-item">
+                        <div class="tl-year">1206</div>
+                        <h3>Al-Jazarí y el león mecánico</h3>
+                        <p>
+                            El ingeniero kurdo Al-Jazarí describió autómatas
+                            programables con levas y tambores, incluido un león
+                            que caminaba y rugía. Su libro es un hito de la
+                            ingeniería medieval.
+                        </p>
+                        <div class="tl-highlight"><i class="fa-solid fa-gear"></i> Mecánica programable</div>
+                    </div>
+
+                    <div class="tl-item">
+                        <div class="tl-year">1495</div>
+                        <h3>El caballero mecánico de Da Vinci</h3>
+                        <p>
+                            Leonardo diseñó un caballero mecánico capaz de mover
+                            brazos, cabeza y mandíbula. Sus cuadernos anticiparon
+                            siglos de robótica humanoide.
+                        </p>
+                        <div class="tl-highlight"><i class="fa-solid fa-pen-ruler"></i> Diseño visionario</div>
+                    </div>
+
+                    <div class="tl-item">
+                        <div class="tl-year">1738</div>
+                        <h3>El pato de Vaucanson</h3>
+                        <p>
+                            Jacques de Vaucanson presentó un pato mecánico que
+                            comía, digería y defecaba. Fue la sensación de Europa
+                            y demostró que la mecánica podía imitar procesos
+                            biológicos.
+                        </p>
+                        <div class="tl-highlight"><i class="fa-solid fa-feather"></i> Autómata biológico</div>
+                    </div>
+
+                    <div class="tl-item">
+                        <div class="tl-year">1770</div>
+                        <h3>El escribano de los Jaquet-Droz</h3>
+                        <p>
+                            Pierre y Henri-Louis Jaquet-Droz construyeron un
+                            autómata capaz de escribir hasta 40 caracteres.
+                            La precisión mecánica alcanzó un nivel nunca visto.
+                        </p>
+                        <div class="tl-highlight"><i class="fa-solid fa-pen"></i> Precisión extrema</div>
+                    </div>
+
+                    <div class="tl-item">
+                        <div class="tl-year">1921</div>
+                        <h3>Nace la palabra "robot"</h3>
+                        <p>
+                            Karel Čapek estrenó <em>R.U.R.</em> (Robots Universales
+                            Rossum), obra que introdujo el término "robot", del
+                            checo <em>robota</em>: trabajo forzado. La ficción
+                            bautizó a la disciplina.
+                        </p>
+                        <div class="tl-highlight"><i class="fa-solid fa-theater-masks"></i> Ciencia ficción</div>
+                    </div>
+
+                    <div class="tl-item">
+                        <div class="tl-year">1942</div>
+                        <h3>Las Tres Leyes de Asimov</h3>
+                        <p>
+                            Isaac Asimov formuló las Tres Leyes de la Robótica
+                            en su relato "Runaround". Sentaron las bases éticas
+                            que aún hoy se discuten en el diseño de sistemas
+                            autónomos.
+                        </p>
+                        <div class="tl-highlight"><i class="fa-solid fa-scale-balanced"></i> Ética robótica</div>
+                    </div>
+
+                    <div class="tl-item">
+                        <div class="tl-year">1961</div>
+                        <h3>Unimate, el primer robot industrial</h3>
+                        <p>
+                            Unimate comenzó a trabajar en la planta de General
+                            Motors en Nueva Jersey. Fue el primer robot industrial
+                            programable. La robótica dejó de ser espectáculo
+                            para convertirse en herramienta de producción.
+                        </p>
+                        <div class="tl-highlight"><i class="fa-solid fa-industry"></i> Revolución industrial</div>
+                    </div>
+
+                    <div class="tl-item">
+                        <div class="tl-year">1997</div>
+                        <h3>Sojourner en Marte</h3>
+                        <p>
+                            La misión Mars Pathfinder desplegó el rover Sojourner,
+                            que exploró la superficie marciana de forma
+                            semiautónoma. La robótica espacial demostró que los
+                            robots podían operar en entornos hostiles.
+                        </p>
+                        <div class="tl-highlight"><i class="fa-solid fa-rocket"></i> Robótica espacial</div>
+                    </div>
+
+                    <div class="tl-item">
+                        <div class="tl-year">2000</div>
+                        <h3>ASIMO camina</h3>
+                        <p>
+                            Honda presentó ASIMO, un robot humanoide capaz de
+                            caminar, subir escaleras y reconocer rostros. La
+                            interacción con entornos no estructurados se volvió
+                            prioridad.
+                        </p>
+                        <div class="tl-highlight"><i class="fa-solid fa-person-walking"></i> Humanoides</div>
+                    </div>
+
+                    <div class="tl-item">
+                        <div class="tl-year">2012</div>
+                        <h3>ROS y la robótica open source</h3>
+                        <p>
+                            El Robot Operating System (ROS) se consolidó como
+                            estándar open source. Los desafíos DARPA impulsaron
+                            la robótica de rescate y los vehículos autónomos.
+                            Los cobots comenzaron a compartir espacio con humanos.
+                        </p>
+                        <div class="tl-highlight"><i class="fa-brands fa-osi"></i> Open source</div>
+                    </div>
+
+                    <div class="tl-item">
+                        <div class="tl-year">2020 — 2026</div>
+                        <h3>IA + robótica: la fusión</h3>
+                        <p>
+                            Modelos de lenguaje, visión por computador y
+                            aprendizaje por refuerzo se integraron en robots.
+                            Los cuadrúpedos y humanoides aprendieron tareas
+                            complejas por imitación. En 2026, la autonomía
+                            es la norma.
+                        </p>
+                        <div class="tl-highlight"><i class="fa-solid fa-microchip"></i> IA generativa</div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== FUTURO ===== -->
+        <section class="future" id="futuro">
+            <div class="container">
+                <div class="future-grid">
+
+                    <div class="future-copy">
+                        <h2>2026:<br><span class="gradient">el presente autónomo.</span></h2>
+
+                        <p>
+                            Hoy los robots autónomos operan en logística,
+                            agricultura, cirugía, exploración espacial y
+                            manufactura. Los vehículos autónomos de nivel 4
+                            circulan en ciudades seleccionadas. Los humanoides
+                            de nueva generación comienzan a integrarse en
+                            tareas de servicio.
+                        </p>
+
+                        <p>
+                            La pregunta ya no es si los robots serán autónomos,
+                            sino cómo conviviremos con ellos.
+                        </p>
+
+                        <ul class="future-list">
+                            <li>
+                                <span class="check"><i class="fa-solid fa-check"></i></span>
+                                <div>
+                                    <strong>Vehículos autónomos nivel 4</strong>
+                                    <span>Circulan en ciudades seleccionadas de Asia, Europa y América.</span>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="check"><i class="fa-solid fa-check"></i></span>
+                                <div>
+                                    <strong>Humanoides de servicio</strong>
+                                    <span>Comienzan a integrarse en hoteles, hospitales y almacenes.</span>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="check"><i class="fa-solid fa-check"></i></span>
+                                <div>
+                                    <strong>IA generativa embebida</strong>
+                                    <span>Los robots interpretan órdenes en lenguaje natural y se adaptan.</span>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="check"><i class="fa-solid fa-check"></i></span>
+                                <div>
+                                    <strong>Robótica colaborativa</strong>
+                                    <span>Cobots comparten espacio con humanos en fábricas y laboratorios.</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="future-visual">
+                        <div class="orbit"></div>
+                        <div class="orbit two"></div>
+                        <div class="orbit three"></div>
+                        <div class="orbit-center">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== CTA ===== -->
+        <section class="cta">
+            <div class="container">
+                <h2>¿Te gustó esta historia?</h2>
+                <p>
+                    Explora más artículos sobre tecnología, inteligencia artificial
+                    y el futuro de la robótica en el blog.
+                </p>
+                <a href="https://skeleton.cl/#blog" target="_blank"" class="cta-button">
+                    Ver más artículos
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer>
+        <div class="container">
+            <div class="footer-inner">
+                <a class="footer-copy" href="https://skeleton.cl" target="_blank">
+                    © 2026 <strong>Paul Pineda</strong> · skeleton.cl
+                </a>
+                <div class="footer-links">
+                    <a href="#eras">Eras</a>
+                    <a href="#cronologia">Cronología</a>
+                    <a href="#futuro">2026</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        (function() {
+            /* Header scroll */
+            const header = document.getElementById('site-header');
+
+            function updateHeader() {
+                if (window.scrollY > 20) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            }
+            window.addEventListener('scroll', updateHeader, { passive: true });
+            updateHeader();
+
+            /* Mobile menu */
+            const mobileMenu = document.getElementById('mobile-menu');
+            const navLinks = document.getElementById('nav-links');
+
+            mobileMenu.addEventListener('click', function() {
+                const opened = navLinks.classList.toggle('open');
+                mobileMenu.setAttribute('aria-expanded', opened ? 'true' : 'false');
+                mobileMenu.innerHTML = opened ?
+                    '<i class="fa-solid fa-xmark"></i>' :
+                    '<i class="fa-solid fa-bars"></i>';
+            });
+
+            navLinks.querySelectorAll('a').forEach(function(link) {
+                link.addEventListener('click', function() {
+                    navLinks.classList.remove('open');
+                    mobileMenu.setAttribute('aria-expanded', 'false');
+                    mobileMenu.innerHTML = '<i class="fa-solid fa-bars"></i>';
+                });
+            });
+
+            /* Reveal on scroll */
+            const tlItems = document.querySelectorAll('.tl-item');
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            tlItems.forEach(function(item) {
+                observer.observe(item);
+            });
+
+            /* Smooth anchor */
+            document.querySelectorAll('a[href^="#"]').forEach(function(link) {
+                link.addEventListener('click', function(event) {
+                    const targetId = link.getAttribute('href');
+                    if (!targetId || targetId === '#') return;
+                    const target = document.querySelector(targetId);
+                    if (!target) return;
+                    event.preventDefault();
+                    const headerHeight = header.offsetHeight;
+                    const targetPosition = target.getBoundingClientRect().top +
+                        window.scrollY - headerHeight - 15;
+                    window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
